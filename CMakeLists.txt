@@ -4,11 +4,6 @@ project(hdf5-example)
 
 enable_language(CXX)
 
-add_executable(
-    writedata.x
-    src/writedata.cpp
-    )
-
 # the option is here so that we can plug it into other
 # codes where HDF5 may be optional
 option(ENABLE_HDF5 "Enable HDF5 support" ON)
@@ -43,11 +38,19 @@ if(ENABLE_HDF5)
             ${PROJECT_BINARY_DIR}/hdf5_local/build/bin/libhdf5.a
             -ldl
             )
-        add_dependencies(writedata.x hdf5_local)
     endif()
 endif()
 
-target_link_libraries(
-    writedata.x
-    ${_hdf5_libs}
-    )
+if(ENABLE_HDF5)
+    if(NOT HDF5_FOUND)
+        add_dependencies(writedata.x hdf5_local)
+    endif()
+    add_executable(
+        writedata.x
+        src/writedata.cpp
+        )
+    target_link_libraries(
+        writedata.x
+        ${_hdf5_libs}
+        )
+endif()
