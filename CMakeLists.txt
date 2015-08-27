@@ -30,6 +30,7 @@ if(ENABLE_HDF5)
             INSTALL_COMMAND ""
             )
         include_directories(
+            ${PROJECT_BINARY_DIR}/hdf5_local/src/hdf5-${_hdf5_version}/src
             ${PROJECT_BINARY_DIR}/hdf5_local/src/hdf5-${_hdf5_version}/c++/src
             ${PROJECT_BINARY_DIR}/hdf5_local/build
             )
@@ -42,13 +43,13 @@ if(ENABLE_HDF5)
 endif()
 
 if(ENABLE_HDF5)
-    if(NOT HDF5_FOUND)
-        add_dependencies(writedata.x hdf5_local)
-    endif()
     add_executable(
         writedata.x
         src/writedata.cpp
         )
+    if(NOT HDF5_FOUND)
+        add_dependencies(writedata.x hdf5_local)
+    endif()
     target_link_libraries(
         writedata.x
         ${_hdf5_libs}
